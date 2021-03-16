@@ -8,6 +8,12 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+/**
+ * Disabling eslint for line because of "no-unused-vars" error
+ * for EventItem, which is only being used in type assertion with
+ * the event returned as data, not for declaring a variable, perhaps
+ */
+// eslint-disable-next-line no-unused-vars
 import { EventItem } from '../types'
 import EventService from '../services/EventService'
 
