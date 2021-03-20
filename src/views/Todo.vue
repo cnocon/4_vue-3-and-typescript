@@ -1,42 +1,3 @@
-<script lang="ts">
-import { defineComponent } from 'vue'
-import { TodoItem } from '../types'
-
-export default defineComponent({
-  data: () => ({
-    newTask: {
-      label: '',
-      type: 'personal'
-    } as TodoItem,
-    taskItems: [] as TodoItem[],
-    listFilter: 'all'
-  }),
-  computed: {
-    filteredTasks(): TodoItem[] {
-      if (this.listFilter === 'complete') {
-        return this.taskItems.filter(
-          (item: TodoItem) => item.isComplete === true
-        )
-      } else if (this.listFilter === 'incomplete') {
-        return this.taskItems.filter(
-          (item: TodoItem) => item.isComplete === false
-        )
-      } else {
-        return this.taskItems
-      }
-    }
-  },
-  methods: {
-    addTask() {
-      this.taskItems.push({
-        ...this.newTask,
-        isComplete: false
-      })
-    }
-  }
-})
-</script>
-
 <template>
   <div class="todo-page">
     <h1>Todo</h1>
@@ -70,6 +31,53 @@ export default defineComponent({
     </ul>
   </div>
 </template>
+
+<script lang="ts">
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
+import { computed, defineComponent, reactive, toRefs } from 'vue'
+import { TodoItem } from '../types'
+
+export default defineComponent({
+  // adding setup method indicates you're about to use the Composition API
+  setup() {
+    const state = reactive({
+      newTask: {
+        label: '',
+        type: 'personal'
+      } as TodoItem,
+      taskItems: [] as TodoItem[],
+      listFilter: 'all'
+    })
+
+    // the computed heper method takes a callback function
+    const filteredTasks = computed(() => {
+      if (state.listFilter === 'complete') {
+        return state.taskItems.filter(
+          (item: TodoItem) => item.isComplete === true
+        )
+      } else if (state.listFilter === 'incomplete') {
+        return state.taskItems.filter(
+          (item: TodoItem) => item.isComplete === false
+        )
+      } else {
+        return state.taskItems
+      }
+    })
+
+    const addTask = () => {
+      state.taskItems.push({
+        ...state.newTask,
+        isComplete: false
+      })
+    }
+
+    return {
+      ...toRefs(state) // toRefs allows to you refer to individual pieces of state within your template instead of having to say state.newTask, state.taskItems, etc. inside of the template
+    }
+  }
+})
+</script>
 
 <style scoped>
 .todo-page {
